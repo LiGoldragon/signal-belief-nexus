@@ -1,0 +1,64 @@
+Signal
+[]                                                    ; imports
+[ Register.Repository                                ; inputs: repository and workspace effects
+  Resolve.Vector<ModuleName>
+  Furnish.FurnishRequest
+  Subscribe ]
+[ Registered.RepositoryState                         ; outputs: one answer, then subscribed updates
+  Resolved.Resolution
+  Furnished.FurnishedWorkspace
+  Subscribed.BeliefState
+  Changed.Change
+  Refused.Refusal ]
+[ Kind.[ Spirit Intent Vision Knowledge Role ]       ; types: a module name is its folder kind and subject
+  Subject.String
+  ModuleName.{ Kind Subject }
+  RepositoryPath.String
+  Repository.RepositoryPath
+  WorkspacePath.String
+  Workspace.WorkspacePath
+  RelativePath.String
+  SourceRevision.String
+  PublicationRevision.Integer
+  GenerationId.String
+  Harness.[ Codex ]
+  RepositoryState.{ Repository SourceRevision }
+  Found.ModuleName
+  Resolution.{ Vector<Found> Vector<ModuleName> }
+  FurnishRequest.{ Workspace Harness Vector<ModuleName> }
+  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision Vector<Found> Vector<ModuleName> }
+  BeliefState.{ Vector<RepositoryState> Vector<FurnishedWorkspace> }
+  Change.{ Repository SourceRevision Vector<ModuleName> Vector<FurnishedWorkspace> }
+  UserId.Integer
+  GroupId.Integer
+  ProcessId.Integer
+  ExecutablePath.String
+  ContractDigest.String
+  PeerName.String
+  Caller.{ UserId GroupId ProcessId ExecutablePath ContractDigest }
+  PeerIdentity.{ PeerName UserId GroupId ExecutablePath ContractDigest }
+  PeerList.Vector<PeerIdentity>
+  Call.{ Caller Query }
+  SourceOperation.[ Registering Snapshotting Resolving Watching ]
+  FileOperation.[ Reading Staging Linking Replacing Inspecting ]
+  MemoryOperation.[ Loading Recording BeginningPublication CompletingPublication Recovering ]
+  ExitStatus.Integer
+  Diagnostic.{ ExecutablePath Option<ExitStatus> String }
+  SourceEvidence.[ NotRepository MainUnavailable RevisionUnavailable
+                   Ambiguous.{ ModuleName Vector<Repository> }
+                   Translator.Diagnostic ]
+  SourceFailure.{ Repository SourceOperation SourceEvidence }
+  FileEvidence.[ OutsideBoundary.{ RelativePath RelativePath }
+                 PermissionDenied
+                 MissingRequired.RelativePath
+                 Conflict.{ Option<PublicationRevision> Option<PublicationRevision> }
+                 Translator.Diagnostic ]
+  FileFailure.{ Workspace FileOperation FileEvidence }
+  MemoryEvidence.[ Unavailable Corrupt Conflict ]
+  MemoryFailure.{ MemoryOperation MemoryEvidence }
+  Refusal.[ Source.SourceFailure
+            File.FileFailure
+            Memory.MemoryFailure
+            NotAuthorized.Caller
+            SubscriberCapacityReached.Integer
+            NotReady ] ]
