@@ -1,5 +1,5 @@
 Signal
-[ :translator:[ Caller PeerBinding ] ]                ; imports: shared authenticated identity
+[ :translator:[ Caller PeerBinding UserId PeerId ] ]  ; imports: shared authenticated identity
 [ Register.Repository                                ; inputs: repository and workspace effects
   Resolve.Vector<ModuleName>
   Furnish.FurnishRequest
@@ -27,6 +27,7 @@ Signal
   PublicationRevision.Integer
   GenerationId.String
   Harness.[ Claude Codex ]
+  Owner.[ Login.UserId Peer.PeerId ]                 ; durable authority, separate from Caller provenance
   RepositoryState.{ Repository SourceRevision }
   Found.ModuleName
   Resolution.{ Vector<Found> Vector<ModuleName> }
