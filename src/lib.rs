@@ -61,6 +61,7 @@ pub struct GenerationId(pub String);
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum Harness {
+    Claude,
     Codex,
 }
 #[rustfmt::skip]
@@ -92,17 +93,24 @@ pub struct FurnishRequest {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct SystemPrompt(pub String);
+pub enum Placement {
+    SystemPrompt,
+    Skills,
+}
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct Skills(pub String);
+pub struct SystemPromptPath(pub String);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct Placement {
-    pub system_prompt: SystemPrompt,
-    pub skills: Skills,
+pub struct SkillsPath(pub String);
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct FurnishedPaths {
+    pub system_prompt_path: SystemPromptPath,
+    pub skills_path: SkillsPath,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -111,7 +119,7 @@ pub struct FurnishedWorkspace {
     pub workspace: Workspace,
     pub generation_id: GenerationId,
     pub publication_revision: PublicationRevision,
-    pub placement: Placement,
+    pub furnished_paths: FurnishedPaths,
     pub found_vector: std::vec::Vec<Found>,
     pub module_name_vector: std::vec::Vec<ModuleName>,
 }
@@ -379,7 +387,7 @@ pub enum Response {
     MemoryAfterPublication(MemoryAfterPublication),
     Refused(Refusal),
 }
-pub const ETHOS: &str = include_str!("../signal.ethos");
+const ETHOS: &str = include_str!("../signal.ethos");
 
 impl signal::Contracted for Query {
     const CONTRACT_SOURCE: &'static str = ETHOS;
@@ -412,9 +420,9 @@ mod tests {
                 workspace: Workspace(WorkspacePath("/tmp/work".into())),
                 generation_id: GenerationId("sha256:one".into()),
                 publication_revision: PublicationRevision(7),
-                placement: Placement {
-                    system_prompt: SystemPrompt("/tmp/work/.belief/current/model-instructions.md".into()),
-                    skills: Skills("/tmp/work/.agents/skills".into()),
+                furnished_paths: FurnishedPaths {
+                    system_prompt_path: SystemPromptPath("/tmp/work/.belief/current/model-instructions.md".into()),
+                    skills_path: SkillsPath("/tmp/work/.agents/skills".into()),
                 },
                 found_vector: vec![Found(ModuleName { kind: Kind::Vision, subject: Subject("nexus".into()) })],
                 module_name_vector: vec![ModuleName { kind: Kind::Knowledge, subject: Subject("missing".into()) }],

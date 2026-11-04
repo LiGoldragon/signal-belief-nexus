@@ -26,15 +26,16 @@ Signal
   SourceRevision.String
   PublicationRevision.Integer
   GenerationId.String
-  Harness.[ Codex ]
+  Harness.[ Claude Codex ]
   RepositoryState.{ Repository SourceRevision }
   Found.ModuleName
   Resolution.{ Vector<Found> Vector<ModuleName> }
   FurnishRequest.{ Workspace Harness Vector<ModuleName> }
-  SystemPrompt.String
-  Skills.String
-  Placement.{ SystemPrompt Skills }
-  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision Placement Vector<Found> Vector<ModuleName> }
+  Placement.[ SystemPrompt Skills ]                  ; where one module is furnished
+  SystemPromptPath.String
+  SkillsPath.String
+  FurnishedPaths.{ SystemPromptPath SkillsPath }
+  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision FurnishedPaths Vector<Found> Vector<ModuleName> }
   BeliefState.{ Vector<RepositoryState> Vector<FurnishedWorkspace> }
   Change.{ Repository SourceRevision Vector<ModuleName> Vector<FurnishedWorkspace> }
   UserId.Integer
