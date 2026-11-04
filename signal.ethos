@@ -12,6 +12,7 @@ Signal
   WatchFailed.WatchFailure
   RefurnishFailed.RefurnishFailure
   CleanupFailed.CleanupFailure
+  SubscriptionClosed.CloseReason                     ; terminal event on the subscribed connection
   MemoryAfterPublication.MemoryAfterPublication
   Refused.Refusal ]
 [ Kind.[ Spirit Intent Vision Knowledge Role ]       ; types: a module name is its folder kind and subject
@@ -67,6 +68,7 @@ Signal
   WatchFailure.{ Repository Option<SourceRevision> SourceFailure }
   RefurnishFailure.{ Workspace Repository SourceRevision Refusal }
   CleanupFailure.{ Workspace GenerationId PublicationRevision FileFailure } ; successful publication after which target cleanup failed
+  CloseReason.[ QueueOverflow WriteTimeout ]
   MemoryAfterPublication.{ Workspace GenerationId PublicationRevision MemoryFailure }
   Refusal.[ Source.SourceFailure
             File.FileFailure

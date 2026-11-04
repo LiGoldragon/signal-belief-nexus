@@ -330,6 +330,13 @@ pub struct CleanupFailure {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub enum CloseReason {
+    QueueOverflow,
+    WriteTimeout,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct MemoryAfterPublication {
     pub workspace: Workspace,
     pub generation_id: GenerationId,
@@ -368,6 +375,7 @@ pub enum Response {
     WatchFailed(WatchFailure),
     RefurnishFailed(RefurnishFailure),
     CleanupFailed(CleanupFailure),
+    SubscriptionClosed(CloseReason),
     MemoryAfterPublication(MemoryAfterPublication),
     Refused(Refusal),
 }
