@@ -142,18 +142,6 @@ pub struct Change {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct UserId(pub i64);
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct GroupId(pub i64);
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct ProcessId(pub i64);
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct ExecutablePath(pub String);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -162,36 +150,12 @@ pub struct ContractDigest(pub String);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct PeerName(pub String);
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct Caller {
-    pub user_id: UserId,
-    pub group_id: GroupId,
-    pub process_id: ProcessId,
-    pub executable_path: ExecutablePath,
-    pub contract_digest: ContractDigest,
-}
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct PeerIdentity {
-    pub peer_name: PeerName,
-    pub user_id: UserId,
-    pub group_id: GroupId,
-    pub executable_path: ExecutablePath,
-    pub contract_digest: ContractDigest,
-}
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct PeerList(pub std::vec::Vec<PeerIdentity>);
+pub struct PeerList(pub std::vec::Vec<translator::PeerBinding>);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct Call {
-    pub caller: Caller,
+    pub caller: translator::Caller,
     pub query: Query,
 }
 #[rustfmt::skip]
@@ -358,7 +322,7 @@ pub enum Refusal {
     Source(SourceFailure),
     File(FileFailure),
     Memory(MemoryFailure),
-    NotAuthorized(Caller),
+    NotAuthorized(translator::Caller),
     SubscriberCapacityReached(i64),
     NotReady,
 }
@@ -433,22 +397,19 @@ mod tests {
     }
 
     #[test]
-    fn configured_peer_identity_excludes_observed_process_id() {
-        let peer = PeerIdentity {
-            peer_name: PeerName("flow".into()),
-            user_id: UserId(1000),
-            group_id: GroupId(1000),
-            executable_path: ExecutablePath("/nix/store/flow/bin/flow".into()),
-            contract_digest: ContractDigest("sha256:contract".into()),
+    fn configured_peer_binding_carries_shared_identity() {
+        let binding = translator::PeerBinding {
+            peer_id: translator::PeerId("flow".into()),
+            peer_identity: translator::PeerIdentity {
+                user_id: translator::UserId(1000),
+                process_id: translator::ProcessId(42),
+            },
         };
-        let caller = Caller {
-            user_id: peer.user_id.clone(),
-            group_id: peer.group_id.clone(),
-            process_id: ProcessId(42),
-            executable_path: peer.executable_path.clone(),
-            contract_digest: peer.contract_digest.clone(),
+        let caller = translator::Caller {
+            process_id: binding.peer_identity.process_id.clone(),
+            user_id: binding.peer_identity.user_id.clone(),
         };
-        assert_eq!(peer.peer_name, PeerName("flow".into()));
-        assert_eq!(caller.process_id, ProcessId(42));
+        assert_eq!(binding.peer_id, translator::PeerId("flow".into()));
+        assert_eq!(caller.process_id, translator::ProcessId(42));
     }
 }

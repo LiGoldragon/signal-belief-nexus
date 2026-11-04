@@ -1,5 +1,5 @@
 Signal
-[]                                                    ; imports
+[ :translator:[ Caller PeerBinding ] ]                ; imports: shared authenticated identity
 [ Register.Repository                                ; inputs: repository and workspace effects
   Resolve.Vector<ModuleName>
   Furnish.FurnishRequest
@@ -38,15 +38,9 @@ Signal
   FurnishedWorkspace.{ Workspace GenerationId PublicationRevision FurnishedPaths Vector<Found> Vector<ModuleName> }
   BeliefState.{ Vector<RepositoryState> Vector<FurnishedWorkspace> }
   Change.{ Repository SourceRevision Vector<ModuleName> Vector<FurnishedWorkspace> }
-  UserId.Integer
-  GroupId.Integer
-  ProcessId.Integer
   ExecutablePath.String
   ContractDigest.String
-  PeerName.String
-  Caller.{ UserId GroupId ProcessId ExecutablePath ContractDigest }
-  PeerIdentity.{ PeerName UserId GroupId ExecutablePath ContractDigest }
-  PeerList.Vector<PeerIdentity>
+  PeerList.Vector<PeerBinding>
   Call.{ Caller Query }                                ; Query is the Signal root's generated input enum
   SourceOperation.[ Registering Snapshotting Resolving Watching ]
   FileOperation.[ Reading Staging Linking Replacing Inspecting Cleaning ]
