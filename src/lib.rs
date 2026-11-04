@@ -197,6 +197,7 @@ pub enum MemoryOperation {
     Recording,
     BeginningPublication,
     CompletingPublication,
+    AfterPublication,
     Recovering,
 }
 #[rustfmt::skip]
@@ -286,6 +287,32 @@ pub struct MemoryFailure {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct WatchFailure {
+    pub repository: Repository,
+    pub source_revision_option: std::option::Option<SourceRevision>,
+    pub source_failure: SourceFailure,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct RefurnishFailure {
+    pub workspace: Workspace,
+    pub repository: Repository,
+    pub source_revision: SourceRevision,
+    pub refusal: Refusal,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct MemoryAfterPublication {
+    pub workspace: Workspace,
+    pub generation_id: GenerationId,
+    pub publication_revision: PublicationRevision,
+    pub memory_failure: MemoryFailure,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum Refusal {
     Source(SourceFailure),
     File(FileFailure),
@@ -312,9 +339,11 @@ pub enum Response {
     Furnished(FurnishedWorkspace),
     Subscribed(BeliefState),
     Changed(Change),
+    WatchFailed(WatchFailure),
+    RefurnishFailed(RefurnishFailure),
+    MemoryAfterPublication(MemoryAfterPublication),
     Refused(Refusal),
 }
-
 /// The authored schema whose digest identifies this contract on the wire.
 pub const ETHOS: &str = include_str!("../signal.ethos");
 

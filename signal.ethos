@@ -9,6 +9,9 @@ Signal
   Furnished.FurnishedWorkspace
   Subscribed.BeliefState
   Changed.Change
+  WatchFailed.WatchFailure
+  RefurnishFailed.RefurnishFailure
+  MemoryAfterPublication.MemoryAfterPublication
   Refused.Refusal ]
 [ Kind.[ Spirit Intent Vision Knowledge Role ]       ; types: a module name is its folder kind and subject
   Subject.String
@@ -38,10 +41,11 @@ Signal
   Caller.{ UserId GroupId ProcessId ExecutablePath ContractDigest }
   PeerIdentity.{ PeerName UserId GroupId ExecutablePath ContractDigest }
   PeerList.Vector<PeerIdentity>
-  Call.{ Caller Query }
+  Call.{ Caller Query }                                ; Query is the Signal root's generated input enum
   SourceOperation.[ Registering Snapshotting Resolving Watching ]
   FileOperation.[ Reading Staging Linking Replacing Inspecting ]
-  MemoryOperation.[ Loading Recording BeginningPublication CompletingPublication Recovering ]
+  MemoryOperation.[ Loading Recording BeginningPublication CompletingPublication
+                    AfterPublication Recovering ]
   ExitStatus.Integer
   Diagnostic.{ ExecutablePath Option<ExitStatus> String }
   SourceEvidence.[ NotRepository MainUnavailable RevisionUnavailable
@@ -56,6 +60,9 @@ Signal
   FileFailure.{ Workspace FileOperation FileEvidence }
   MemoryEvidence.[ Unavailable Corrupt Conflict ]
   MemoryFailure.{ MemoryOperation MemoryEvidence }
+  WatchFailure.{ Repository Option<SourceRevision> SourceFailure }
+  RefurnishFailure.{ Workspace Repository SourceRevision Refusal }
+  MemoryAfterPublication.{ Workspace GenerationId PublicationRevision MemoryFailure }
   Refusal.[ Source.SourceFailure
             File.FileFailure
             Memory.MemoryFailure
