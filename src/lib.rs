@@ -204,6 +204,7 @@ pub enum FileOperation {
     Linking,
     Replacing,
     Inspecting,
+    Cleaning,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
