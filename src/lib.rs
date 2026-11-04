@@ -133,22 +133,6 @@ pub struct FurnishedWorkspace {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct BeliefState {
-    pub repository_state_vector: std::vec::Vec<RepositoryState>,
-    pub furnished_workspace_vector: std::vec::Vec<FurnishedWorkspace>,
-}
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct Change {
-    pub repository: Repository,
-    pub source_revision: SourceRevision,
-    pub module_name_vector: std::vec::Vec<ModuleName>,
-    pub furnished_workspace_vector: std::vec::Vec<FurnishedWorkspace>,
-}
-#[rustfmt::skip]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct ExecutablePath(pub String);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -300,19 +284,20 @@ pub struct MemoryFailure {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct WatchFailure {
-    pub repository: Repository,
-    pub source_revision_option: std::option::Option<SourceRevision>,
-    pub source_failure: SourceFailure,
+pub enum RefusalKind {
+    Source,
+    File,
+    Memory,
+    NotAuthorized,
+    SubscriberCapacityReached,
+    NotReady,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct RefurnishFailure {
     pub workspace: Workspace,
-    pub repository: Repository,
-    pub source_revision: SourceRevision,
-    pub refusal: Refusal,
+    pub refusal_kind: RefusalKind,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -366,9 +351,8 @@ pub enum Response {
     Registered(RepositoryState),
     Resolved(Resolution),
     Furnished(FurnishedWorkspace),
-    Subscribed(BeliefState),
-    Changed(Change),
-    WatchFailed(WatchFailure),
+    Subscribed(std::vec::Vec<FurnishedWorkspace>),
+    Changed(FurnishedWorkspace),
     RefurnishFailed(RefurnishFailure),
     CleanupFailed(CleanupFailure),
     SubscriptionClosed(CloseReason),
@@ -399,12 +383,7 @@ mod tests {
         let archived = query.signalize().expect("archive public query");
         assert_eq!(Signal::<Query>::from(archived.bytes().to_vec()).restore().unwrap(), query);
 
-        let response = Response::Subscribed(BeliefState {
-            repository_state_vector: vec![RepositoryState {
-                repository: Repository(RepositoryPath("/src/belief".into())),
-                source_revision: SourceRevision("abc123".into()),
-            }],
-            furnished_workspace_vector: vec![FurnishedWorkspace {
+        let response = Response::Subscribed(vec![FurnishedWorkspace {
                 workspace: Workspace(WorkspacePath("/tmp/work".into())),
                 generation_id: GenerationId("sha256:one".into()),
                 publication_revision: PublicationRevision(7),
@@ -414,8 +393,7 @@ mod tests {
                 },
                 found_vector: vec![Found(ModuleName { kind: Kind::Vision, subject: Subject("nexus".into()) })],
                 module_name_vector: vec![ModuleName { kind: Kind::Knowledge, subject: Subject("missing".into()) }],
-            }],
-        });
+            }]);
         let archived = response.signalize().expect("archive public response");
         assert_eq!(Signal::<Response>::from(archived.bytes().to_vec()).restore().unwrap(), response);
     }

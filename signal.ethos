@@ -7,9 +7,8 @@ Signal
 [ Registered.RepositoryState                         ; outputs: one answer, then subscribed updates
   Resolved.Resolution
   Furnished.FurnishedWorkspace
-  Subscribed.BeliefState
-  Changed.Change
-  WatchFailed.WatchFailure
+  Subscribed.Vector<FurnishedWorkspace>
+  Changed.FurnishedWorkspace
   RefurnishFailed.RefurnishFailure
   CleanupFailed.CleanupFailure
   SubscriptionClosed.CloseReason                     ; terminal event on the subscribed connection
@@ -37,8 +36,6 @@ Signal
   SkillsPath.String
   FurnishedPaths.{ SystemPromptPath SkillsPath }
   FurnishedWorkspace.{ Workspace GenerationId PublicationRevision FurnishedPaths Vector<Found> Vector<ModuleName> }
-  BeliefState.{ Vector<RepositoryState> Vector<FurnishedWorkspace> }
-  Change.{ Repository SourceRevision Vector<ModuleName> Vector<FurnishedWorkspace> }
   ExecutablePath.String
   ContractDigest.String
   PeerList.Vector<PeerBinding>
@@ -64,8 +61,8 @@ Signal
   FileFailure.{ Workspace FileOperation FileEvidence }
   MemoryEvidence.[ Unavailable Corrupt Conflict ]
   MemoryFailure.{ MemoryOperation MemoryEvidence }
-  WatchFailure.{ Repository Option<SourceRevision> SourceFailure }
-  RefurnishFailure.{ Workspace Repository SourceRevision Refusal }
+  RefusalKind.[ Source File Memory NotAuthorized SubscriberCapacityReached NotReady ]
+  RefurnishFailure.{ Workspace RefusalKind }
   CleanupFailure.{ Workspace GenerationId PublicationRevision FileFailure } ; successful publication after which target cleanup failed
   CloseReason.[ QueueOverflow WriteTimeout ]
   MemoryAfterPublication.{ Workspace GenerationId PublicationRevision MemoryFailure }
