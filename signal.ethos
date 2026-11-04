@@ -48,7 +48,10 @@ Signal
                     AfterPublication Recovering ]
   ExitStatus.Integer
   Diagnostic.{ ExecutablePath Option<ExitStatus> String }
+  InvalidPlacement.[ Unknown.String NonScalar Duplicate ]
+  InvalidModule.{ ModuleName RelativePath InvalidPlacement }
   SourceEvidence.[ NotRepository MainUnavailable RevisionUnavailable
+                   InvalidModule
                    Ambiguous.{ ModuleName Vector<Repository> }
                    Translator.Diagnostic ]
   SourceFailure.{ Repository SourceOperation SourceEvidence }

@@ -204,6 +204,22 @@ pub struct Diagnostic {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub enum InvalidPlacement {
+    Unknown(String),
+    NonScalar,
+    Duplicate,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct InvalidModule {
+    pub module_name: ModuleName,
+    pub relative_path: RelativePath,
+    pub invalid_placement: InvalidPlacement,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct Ambiguous_Data {
     pub module_name: ModuleName,
     pub repository_vector: std::vec::Vec<Repository>,
@@ -215,6 +231,7 @@ pub enum SourceEvidence {
     NotRepository,
     MainUnavailable,
     RevisionUnavailable,
+    InvalidModule(InvalidModule),
     Ambiguous(Ambiguous_Data),
     Translator(Diagnostic),
 }
