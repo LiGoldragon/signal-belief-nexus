@@ -11,6 +11,7 @@ Signal
   Changed.Change
   WatchFailed.WatchFailure
   RefurnishFailed.RefurnishFailure
+  CleanupFailed.CleanupFailure
   MemoryAfterPublication.MemoryAfterPublication
   Refused.Refusal ]
 [ Kind.[ Spirit Intent Vision Knowledge Role ]       ; types: a module name is its folder kind and subject
@@ -65,6 +66,7 @@ Signal
   MemoryFailure.{ MemoryOperation MemoryEvidence }
   WatchFailure.{ Repository Option<SourceRevision> SourceFailure }
   RefurnishFailure.{ Workspace Repository SourceRevision Refusal }
+  CleanupFailure.{ Workspace GenerationId PublicationRevision FileFailure } ; successful publication after which target cleanup failed
   MemoryAfterPublication.{ Workspace GenerationId PublicationRevision MemoryFailure }
   Refusal.[ Source.SourceFailure
             File.FileFailure

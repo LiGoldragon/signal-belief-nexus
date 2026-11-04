@@ -320,6 +320,15 @@ pub struct RefurnishFailure {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct CleanupFailure {
+    pub workspace: Workspace,
+    pub generation_id: GenerationId,
+    pub publication_revision: PublicationRevision,
+    pub file_failure: FileFailure,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct MemoryAfterPublication {
     pub workspace: Workspace,
     pub generation_id: GenerationId,
@@ -357,6 +366,7 @@ pub enum Response {
     Changed(Change),
     WatchFailed(WatchFailure),
     RefurnishFailed(RefurnishFailure),
+    CleanupFailed(CleanupFailure),
     MemoryAfterPublication(MemoryAfterPublication),
     Refused(Refusal),
 }
