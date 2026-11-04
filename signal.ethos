@@ -29,7 +29,10 @@ Signal
   Found.ModuleName
   Resolution.{ Vector<Found> Vector<ModuleName> }
   FurnishRequest.{ Workspace Harness Vector<ModuleName> }
-  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision Vector<Found> Vector<ModuleName> }
+  SystemPrompt.String
+  Skills.String
+  Placement.{ SystemPrompt Skills }
+  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision Placement Vector<Found> Vector<ModuleName> }
   BeliefState.{ Vector<RepositoryState> Vector<FurnishedWorkspace> }
   Change.{ Repository SourceRevision Vector<ModuleName> Vector<FurnishedWorkspace> }
   UserId.Integer
