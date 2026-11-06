@@ -1,5 +1,14 @@
 # Upgrades
 
+## 0.3.1 — Datom text coverage
+
+No API change from 0.3.0 (`0e8d`). The crate gains `tests/text_roundtrip.rs`, which
+writes the ordinary contract as Datom text and reads it back through the public
+API: a `Furnish` query over scalar wrappers, `PublicationRevision` and
+`GenerationId`, a translator `Caller` inside a refusal, and an `Owner`. The flake
+gains `test-default`, the default feature selection, and `test-datom`, the `datom`
+feature selection running that file.
+
 ## 0.3.0 — translator 0.3.0, Signal 10.3.0, Datom 0.33.0, Protos 0.33.0, ethos-zero 19.2.0
 
 This is the first upgrade of the text contract from 0.2.0, so it takes a minor
