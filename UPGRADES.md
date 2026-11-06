@@ -1,5 +1,12 @@
 # Upgrades
 
+## 0.3.2 — translator 0.3.1
+
+The dependency on translator moves from 0.3.0 (`eeaa`) to the published 0.3.1
+(`1b0e`), so that the ordinary contract, the meta contract and the Nexus select one
+translator. No change to the authored ethos, the generated Rust, the archive or the
+Datom text; the lock gains the `rustix` closure translator 0.3.1 declares on unix.
+
 ## 0.3.1 — Datom text coverage
 
 No API change from 0.3.0 (`0e8d`). The crate gains `tests/text_roundtrip.rs`, which
