@@ -323,7 +323,7 @@ dependencies = [
 
 [[package]]
 name = "signal-belief-nexus"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "datom-codec",
  "protos",
@@ -394,8 +394,8 @@ checksum = "fd3ca314f692efd6c868f8408f53fe444634a845f96c028b97d35f6a1f79f0ee"
 
 [[package]]
 name = "translator"
-version = "0.3.1"
-source = "git+https://github.com/LiGoldragon/translator?rev=1b0e38b#1b0e38bb9f870855f9d0ff99eb80725ad79f8b9f"
+version = "0.3.2"
+source = "git+https://github.com/LiGoldragon/translator?rev=571979d#571979d667d8b16171847c3122b7577a2eaa6669"
 dependencies = [
  "datom-codec",
  "protos",

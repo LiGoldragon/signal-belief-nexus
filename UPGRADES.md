@@ -1,5 +1,11 @@
 # Upgrades
 
+## 0.3.3 — translator 0.3.2
+
+The dependency on translator moves from 0.3.1 (`1b0e`) to the published 0.3.2 (`5719`), so that the
+ordinary contract, the meta contract and the Nexus select one translator. No change to the authored
+ethos, the generated Rust, the archive or the Datom text, and no new lock package.
+
 ## 0.3.2 — translator 0.3.1
 
 The dependency on translator moves from 0.3.0 (`eeaa`) to the published 0.3.1
