@@ -12,7 +12,7 @@ Signal
   RefurnishFailed.RefurnishFailure
   CleanupFailed.CleanupFailure
   SubscriptionClosed.CloseReason                     ; terminal event on the subscribed connection
-  MemoryAfterPublication.MemoryAfterPublication
+  MemoryAfterPublication
   Refused.Refusal ]
 [ Kind.[ Spirit Intent Vision Knowledge Role ]       ; types: a module name is its folder kind and subject
   Subject.String
@@ -28,14 +28,15 @@ Signal
   Harness.[ Claude Codex ]
   Owner.[ Login.UserId Peer.PeerId ]                 ; durable authority, separate from Caller provenance
   RepositoryState.{ Repository SourceRevision }
-  Found.ModuleName
-  Resolution.{ Vector<Found> Vector<ModuleName> }
+  Found.Vector<ModuleName>
+  Missing.Vector<ModuleName>
+  Resolution.{ Found Missing }
   FurnishRequest.{ Workspace Harness Vector<ModuleName> }
   Placement.[ SystemPrompt Skills ]                  ; where one module is furnished
   SystemPromptPath.String
   SkillsPath.String
   FurnishedPaths.{ SystemPromptPath SkillsPath }
-  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision FurnishedPaths Vector<Found> Vector<ModuleName> }
+  FurnishedWorkspace.{ Workspace GenerationId PublicationRevision FurnishedPaths Found Missing }
   ExecutablePath.String
   ContractDigest.String
   PeerList.Vector<PeerBinding>

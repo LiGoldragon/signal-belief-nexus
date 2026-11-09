@@ -1,5 +1,9 @@
 # Upgrades
 
+## 0.4.0 — Found and Missing; translator 0.4.2, signal 10.4.1, datom-codec 09a0526, protos c93b598
+
+`Found` is now `Found.Vector<ModuleName>` and a new `Missing.Vector<ModuleName>` names the unresolved module names; `Resolution` is `{ Found Missing }` and `FurnishedWorkspace` ends `Found Missing` where it ended `Vector<Found> Vector<ModuleName>`. The Datom text is unchanged: two arrays of `{ Kind Subject }`. In Rust, `Found(Vec<ModuleName>)` and `Missing(Vec<ModuleName>)` replace `found_vector` and `module_name_vector`. The variant `MemoryAfterPublication` is written bare. The pins move: translator 0.4.2 (27da70f), signal 10.4.1 (d77169d), datom-codec 09a0526, protos c93b598; the generator is ethos-zero 22.0.0 (1976e45). The `datom` feature carries signal/datom. The repository builds on build-base 9ee222c. A consumer repins with the contract and with the translator.
+
 ## 0.3.3 — translator 0.3.2
 
 The dependency on translator moves from 0.3.1 (`1b0e`) to the published 0.3.2 (`5719`), so that the

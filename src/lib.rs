@@ -81,13 +81,17 @@ pub struct RepositoryState {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct Found(pub ModuleName);
+pub struct Found(pub std::vec::Vec<ModuleName>);
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct Missing(pub std::vec::Vec<ModuleName>);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct Resolution {
-    pub found_vector: std::vec::Vec<Found>,
-    pub module_name_vector: std::vec::Vec<ModuleName>,
+    pub found: Found,
+    pub missing: Missing,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -127,8 +131,8 @@ pub struct FurnishedWorkspace {
     pub generation_id: GenerationId,
     pub publication_revision: PublicationRevision,
     pub furnished_paths: FurnishedPaths,
-    pub found_vector: std::vec::Vec<Found>,
-    pub module_name_vector: std::vec::Vec<ModuleName>,
+    pub found: Found,
+    pub missing: Missing,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -391,8 +395,8 @@ mod tests {
                     system_prompt_path: SystemPromptPath("/tmp/work/.belief/current/model-instructions.md".into()),
                     skills_path: SkillsPath("/tmp/work/.agents/skills".into()),
                 },
-                found_vector: vec![Found(ModuleName { kind: Kind::Vision, subject: Subject("nexus".into()) })],
-                module_name_vector: vec![ModuleName { kind: Kind::Knowledge, subject: Subject("missing".into()) }],
+                found: Found(vec![ModuleName { kind: Kind::Vision, subject: Subject("nexus".into()) }]),
+                missing: Missing(vec![ModuleName { kind: Kind::Knowledge, subject: Subject("missing".into()) }]),
             }]);
         let archived = response.signalize().expect("archive public response");
         assert_eq!(Signal::<Response>::from(archived.bytes().to_vec()).restore().unwrap(), response);
