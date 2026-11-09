@@ -385,21 +385,39 @@ mod tests {
             }],
         });
         let archived = query.signalize().expect("archive public query");
-        assert_eq!(Signal::<Query>::from(archived.bytes().to_vec()).restore().unwrap(), query);
+        assert_eq!(
+            Signal::<Query>::from(archived.bytes().to_vec())
+                .restore()
+                .unwrap(),
+            query
+        );
 
         let response = Response::Subscribed(vec![FurnishedWorkspace {
-                workspace: Workspace(WorkspacePath("/tmp/work".into())),
-                generation_id: GenerationId("sha256:one".into()),
-                publication_revision: PublicationRevision(7),
-                furnished_paths: FurnishedPaths {
-                    system_prompt_path: SystemPromptPath("/tmp/work/.belief/current/model-instructions.md".into()),
-                    skills_path: SkillsPath("/tmp/work/.agents/skills".into()),
-                },
-                found: Found(vec![ModuleName { kind: Kind::Vision, subject: Subject("nexus".into()) }]),
-                missing: Missing(vec![ModuleName { kind: Kind::Knowledge, subject: Subject("missing".into()) }]),
-            }]);
+            workspace: Workspace(WorkspacePath("/tmp/work".into())),
+            generation_id: GenerationId("sha256:one".into()),
+            publication_revision: PublicationRevision(7),
+            furnished_paths: FurnishedPaths {
+                system_prompt_path: SystemPromptPath(
+                    "/tmp/work/.belief/current/model-instructions.md".into(),
+                ),
+                skills_path: SkillsPath("/tmp/work/.agents/skills".into()),
+            },
+            found: Found(vec![ModuleName {
+                kind: Kind::Vision,
+                subject: Subject("nexus".into()),
+            }]),
+            missing: Missing(vec![ModuleName {
+                kind: Kind::Knowledge,
+                subject: Subject("missing".into()),
+            }]),
+        }]);
         let archived = response.signalize().expect("archive public response");
-        assert_eq!(Signal::<Response>::from(archived.bytes().to_vec()).restore().unwrap(), response);
+        assert_eq!(
+            Signal::<Response>::from(archived.bytes().to_vec())
+                .restore()
+                .unwrap(),
+            response
+        );
     }
 
     #[test]

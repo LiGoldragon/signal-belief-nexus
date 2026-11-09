@@ -19,11 +19,16 @@ fn read<T: Composing>(text: &str) -> T {
         depth: 0,
         maximum_depth: 64,
     };
-    Potential::<T>::from(text).actualize(&mut budget).expect("read the datom text")
+    Potential::<T>::from(text)
+        .actualize(&mut budget)
+        .expect("read the datom text")
 }
 
 fn module(subject: &str) -> ModuleName {
-    ModuleName { kind: Kind::Vision, subject: Subject(subject.into()) }
+    ModuleName {
+        kind: Kind::Vision,
+        subject: Subject(subject.into()),
+    }
 }
 
 #[test]
@@ -49,7 +54,10 @@ fn integer_wrapper_and_string_wrapper_round_trip_through_text() {
 
 #[test]
 fn translator_identity_in_the_contract_round_trips_through_text() {
-    let caller = translator::Caller { process_id: translator::ProcessId(42), user_id: translator::UserId(1000) };
+    let caller = translator::Caller {
+        process_id: translator::ProcessId(42),
+        user_id: translator::UserId(1000),
+    };
     let refusal = Response::Refused(Refusal::NotAuthorized(caller));
     assert_eq!(read::<Response>(&text(&refusal)), refusal);
     let owner = Owner::Peer(translator::PeerId("flow".into()));
