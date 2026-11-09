@@ -430,8 +430,8 @@ mod tests {
             },
         };
         let caller = translator::Caller {
-            process_id: binding.peer_identity.process_id.clone(),
-            user_id: binding.peer_identity.user_id.clone(),
+            process_id: binding.peer_identity.process_id,
+            user_id: binding.peer_identity.user_id,
         };
         assert_eq!(binding.peer_id, translator::PeerId("flow".into()));
         assert_eq!(caller.process_id, translator::ProcessId(42));
