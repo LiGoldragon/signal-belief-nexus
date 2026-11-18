@@ -4,14 +4,10 @@ Signal
   Resolve.Vector<ModuleName>
   Furnish.FurnishRequest
   Subscribe ]
-[ Registered.RepositoryState                         ; outputs: one answer, then subscribed updates
+[ Registered.RepositoryState                         ; outputs: every other input receives one answer
   Resolved.Resolution
   Furnished.FurnishedWorkspace
-  Subscribed.Vector<FurnishedWorkspace>
-  Changed.FurnishedWorkspace
-  RefurnishFailed.RefurnishFailure
-  CleanupFailed.CleanupFailure
-  SubscriptionClosed.CloseReason                     ; terminal event on the subscribed connection
+  Subscribed.Stream<Workspaces Furnishing>           ; the owner's furnished workspaces, then each furnishing
   MemoryAfterPublication
   Refused.Refusal ]
 [ Kind.[ Spirit Intent Vision Knowledge Role ]       ; types: a module name is its folder kind and subject
@@ -38,9 +34,7 @@ Signal
   FurnishedPaths.{ SystemPromptPath SkillsPath }
   FurnishedWorkspace.{ Workspace GenerationId PublicationRevision FurnishedPaths Found Missing }
   ExecutablePath.String
-  ContractDigest.String
   PeerList.Vector<PeerBinding>
-  Call.{ Caller Query }                                ; Query is the Signal root's generated input enum
   SourceOperation.[ Registering Snapshotting Resolving Watching ]
   FileOperation.[ Reading Staging Linking Replacing Inspecting Cleaning ]
   MemoryOperation.[ Loading Recording BeginningPublication CompletingPublication
@@ -65,8 +59,12 @@ Signal
   RefusalKind.[ Source File Memory NotAuthorized SubscriberCapacityReached NotReady ]
   RefurnishFailure.{ Workspace RefusalKind }
   CleanupFailure.{ Workspace GenerationId PublicationRevision FileFailure } ; successful publication after which target cleanup failed
-  CloseReason.[ QueueOverflow WriteTimeout ]
   MemoryAfterPublication.{ Workspace GenerationId PublicationRevision MemoryFailure }
+  Workspaces.Vector<FurnishedWorkspace>              ; a subscription's state: the owner's furnished workspaces
+  Furnishing.[ Furnished.FurnishedWorkspace          ; a subscription's change: one workspace furnished anew
+               RefurnishFailed.RefurnishFailure
+               CleanupFailed.CleanupFailure
+               MemoryAfterPublication ]
   Refusal.[ Source.SourceFailure
             File.FileFailure
             Memory.MemoryFailure

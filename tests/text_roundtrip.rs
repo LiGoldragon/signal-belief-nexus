@@ -4,8 +4,8 @@
 use datom_codec::{Actualizing, Budget, Composing, Datomizable, Potential};
 use protos::{Protosizable, ReaderBudget, Textualizable};
 use signal_belief_nexus::{
-    FurnishRequest, GenerationId, Harness, Kind, ModuleName, Owner, PublicationRevision, Query,
-    Refusal, Response, Subject, Workspace, WorkspacePath,
+    FurnishRequest, GenerationId, Harness, Input, Kind, ModuleName, Output, Owner,
+    PublicationRevision, Refusal, Subject, Workspace, WorkspacePath, Workspaces,
 };
 
 fn text<T: Datomizable>(value: &T) -> String {
@@ -33,14 +33,14 @@ fn module(subject: &str) -> ModuleName {
 
 #[test]
 fn furnish_query_with_scalar_wrappers_round_trips_through_text() {
-    let query = Query::Furnish(FurnishRequest {
+    let query = Input::Furnish(FurnishRequest {
         workspace: Workspace(WorkspacePath("/tmp/work".into())),
         harness: Harness::Codex,
         module_name_vector: vec![module("nexus"), module("signal")],
     });
     let written = text(&query);
-    assert_eq!(read::<Query>(&written), query);
-    assert_eq!(text(&read::<Query>(&written)), written);
+    assert_eq!(read::<Input>(&written), query);
+    assert_eq!(text(&read::<Input>(&written)), written);
 }
 
 #[test]
@@ -58,8 +58,19 @@ fn translator_identity_in_the_contract_round_trips_through_text() {
         process_id: translator::ProcessId(42),
         user_id: translator::UserId(1000),
     };
-    let refusal = Response::Refused(Refusal::NotAuthorized(caller));
-    assert_eq!(read::<Response>(&text(&refusal)), refusal);
+    let refusal = Output::Refused(Refusal::NotAuthorized(caller));
+    assert_eq!(read::<Output>(&text(&refusal)), refusal);
     let owner = Owner::Peer(translator::PeerId("flow".into()));
     assert_eq!(read::<Owner>(&text(&owner)), owner);
+}
+
+#[test]
+fn a_subscription_frame_is_written_as_the_frame_it_carries() {
+    let opened = Output::Subscribed(signal::Frame::Opened(Workspaces(Vec::new())));
+    let written = text(&opened);
+    assert!(
+        written.starts_with("Subscribed.Opened."),
+        "an opened frame is written under its own name: {written}"
+    );
+    assert_eq!(read::<Output>(&written), opened);
 }
