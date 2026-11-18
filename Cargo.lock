@@ -366,7 +366,7 @@ dependencies = [
 
 [[package]]
 name = "signal-belief-nexus"
-version = "1.0.0"
+version = "0.5.0"
 dependencies = [
  "datom-codec",
  "protos",
