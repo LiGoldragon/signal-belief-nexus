@@ -1241,7 +1241,7 @@ rec {
       };
       "signal-belief-nexus" = rec {
         crateName = "signal-belief-nexus";
-        version = "1.0.0";
+        version = "0.5.0";
         edition = "2021";
         src = lib.cleanSourceWith { filter = sourceFilter;  src = ./.; };
         libName = "signal_belief_nexus";
